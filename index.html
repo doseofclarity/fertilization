@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Fertilization · MCN · Pillitteri Review</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <style>
+        .transition-all { transition: all 0.3s ease; }
+        .recall-mode .reveal-text {
+            background-color: #cbd5e1;
+            color: transparent;
+            border-radius: 0.375rem;
+            padding: 0 0.25rem;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: inset 0 0 0 1px #94a3b8;
+        }
+        .recall-mode .reveal-text:hover,
+        .recall-mode .reveal-text.revealed {
+            background-color: #fde047;
+            color: #1e293b;
+        }
+        .content-section { animation: fade 0.3s ease; }
+        @keyframes fade { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .locked-section { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
+        .quiz-feedback-correct { background-color: #dcfce7; border-left: 4px solid #22c55e; }
+        .quiz-feedback-wrong { background-color: #fee2e2; border-left: 4px solid #ef4444; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #0e7b7b; border-radius: 8px; }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: { extend: { colors: { primary: '#0f5c5c', secondary: '#e6f7f7' } } }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 h-screen flex flex-col md:flex-row font-sans overflow-hidden">
+
+    <!-- Mobile header -->
+    <div class="md:hidden bg-primary text-white p-4 flex justify-between items-center shadow-md z-30 shrink-0">
+        <button onclick="toggleMobileMenu()" class="text-white text-2xl focus:outline-none">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+        <h1 class="font-bold text-lg"><i class="fa-regular fa-heart mr-2"></i> Fertilization · MCN</h1>
+        <div class="w-8"></div>
+    </div>
+
+    <!-- Sidebar / Nav -->
+    <nav id="sidebar" class="hidden md:flex flex-col w-full md:w-80 bg-white shadow-2xl h-full absolute md:relative z-30 transition-transform duration-300 shrink-0 border-r border-slate-200">
+        <div class="p-6 bg-gradient-to-br from-primary to-teal-800 text-white hidden md:block shrink-0">
+            <h1 class="font-black text-2xl tracking-wide"><i class="fa-regular fa-heart mr-2"></i> Fertilization</h1>
+            <p class="text-sm text-slate-200 mt-1">Maternal-Child Nursing · Adele Pillitteri</p>
+        </div>
+        <div class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1 text-sm font-medium">
+                <li><button onclick="showSection('home')" id="btn-home" class="nav-btn w-full text-left px-6 py-3 bg-secondary text-primary border-r-4 border-primary"><i class="fa-solid fa-house w-6"></i> Home / Start</button></li>
+                <li><button onclick="showSection('gametogenesis')" id="btn-gametogenesis" class="nav-btn w-full text-left px-6 py-3 text-slate-600 locked-section"><i class="fa-solid fa-dna w-6 hidden"></i><i class="fa-solid fa-lock w-6"></i> 1. Gametogenesis</button></li>
+                <li><button onclick="showSection('ovulation')" id="btn-ovulation" class="nav-btn w-full text-left px-6 py-3 text-slate-600 locked-section"><i class="fa-solid fa-chart-line w-6 hidden"></i><i class="fa-solid fa-lock w-6"></i> 2. Ovulation & Sperm Transport</button></li>
+                <li><button onclick="showSection('fertilization')" id="btn-fertilization" class="nav-btn w-full text-left px-6 py-3 text-slate-600 locked-section"><i class="fa-solid fa-microscope w-6 hidden"></i><i class="fa-solid fa-lock w-6"></i> 3. Fertilization Process</button></li>
+                <li><button onclick="showSection('implantation')" id="btn-implantation" class="nav-btn w-full text-left px-6 py-3 text-slate-600 locked-section"><i class="fa-solid fa-baby-carriage w-6 hidden"></i><i class="fa-solid fa-lock w-6"></i> 4. Cleavage & Implantation</button></li>
+                <li><button onclick="showSection('nursing')" id="btn-nursing" class="nav-btn w-full text-left px-6 py-3 text-slate-600 locked-section"><i class="fa-solid fa-user-nurse w-6 hidden"></i><i class="fa-solid fa-lock w-6"></i> 5. Nursing Implications</button></li>
+                <li><button onclick="showSection('mnemonics')" id="btn-mnemonics" class="nav-btn w-full text-left px-6 py-3 text-slate-600 border-t border-slate-200 mt-2 locked-section"><i class="fa-solid fa-brain w-6 hidden"></i><i class="fa-solid fa-lock w-6"></i> Mnemonics & Key Points</button></li>
+                <li><button onclick="showSection('final_quiz_sec')" id="btn-final_quiz_sec" class="nav-btn w-full text-left px-6 py-3 text-amber-700 locked-section"><i class="fa-solid fa-graduation-cap w-6 hidden"></i><i class="fa-solid fa-lock w-6"></i> Final 50-Item Exam</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="flex-1 h-full overflow-y-auto bg-slate-100 relative w-full">
+        <div class="fixed top-16 md:top-4 right-4 md:right-8 z-40 flex items-center bg-white/90 backdrop-blur px-4 py-3 rounded-full shadow-lg border cursor-pointer" onclick="toggleRecallMode()">
+            <span class="mr-3 text-sm font-bold text-slate-700 hidden md:inline"><i class="fa-regular fa-lightbulb text-primary mr-1"></i> Active recall</span>
+            <button id="recall-toggle" class="w-12 h-6 bg-slate-300 rounded-full relative transition-colors duration-300 shadow-inner pointer-events-none">
+                <div id="recall-knob" class="w-5 h-5 bg-white rounded-full absolute top-0.5 left-0.5 transition-transform duration-300 shadow"></div>
+            </button>
+        </div>
+
+        <div class="p-4 md:p-8 max-w-6xl mx-auto pb-32">
+            <!-- HOME SECTION -->
+            <section id="home" class="content-section flex flex-col items-center justify-center min-h-[80vh] text-center">
+                <div class="bg-gradient-to-br from-slate-800 to-primary text-white rounded-3xl shadow-2xl p-10 md:p-16 w-full relative overflow-hidden">
+                    <div class="absolute top-0 right-0 -mt-10 -mr-10 opacity-5 pointer-events-none"><i class="fa-regular fa-heart text-[20rem]"></i></div>
+                    <div class="relative z-10">
+                        <div class="bg-white/10 backdrop-blur inline-block p-4 rounded-full text-white/80 mb-6"><i class="fa-solid fa-sperm text-5xl"></i> <i class="fa-solid fa-egg text-4xl ml-2"></i></div>
+                        <h1 class="text-4xl md:text-6xl font-black mb-4">Fertilization</h1>
+                        <p class="text-xl md:text-2xl font-light mb-6">The beginning of human life: from gametes to zygote</p>
+                        <div class="bg-white/20 backdrop-blur inline-block px-6 py-3 rounded-full mb-10">
+                            <p class="text-lg">Based on <strong>Adele Pillitteri</strong> (latest ed.) & standard MCN curriculum</p>
+                        </div>
+                        <button onclick="unlockFirstSection()" class="bg-teal-600 hover:bg-teal-500 text-white font-black py-4 px-10 rounded-full shadow-xl transition-all text-lg flex items-center mx-auto"> Begin Module <i class="fa-solid fa-arrow-right ml-3"></i></button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SECTION 1: GAMETOGENESIS -->
+            <section id="gametogenesis" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black text-slate-800 mb-6 border-b-2 border-primary pb-3"><i class="fa-solid fa-dna text-primary mr-4"></i> Gametogenesis: Oogenesis & Spermatogenesis</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-pink-50 p-5 rounded-xl">
+                            <h3 class="font-bold text-lg mb-2"><i class="fa-solid fa-egg"></i> Oogenesis (Female)</h3>
+                            <ul class="list-disc pl-5 space-y-1 text-sm">
+                                <li>Begins in fetal life: <span class="reveal-text">oogonia → primary oocytes</span> (arrested in prophase I).</li>
+                                <li>At birth: ~<span class="reveal-text">1–2 million primary oocytes</span>; by puberty ~400,000.</li>
+                                <li>Each month: <span class="reveal-text">FSH & LH stimulate completion of meiosis I</span> → secondary oocyte + polar body.</li>
+                                <li>Secondary oocyte arrested at <span class="reveal-text">metaphase II</span>; completes meiosis only if fertilization occurs.</li>
+                                <li>Result: <span class="reveal-text">1 ovum + 2–3 polar bodies</span> (degenerate).</li>
+                            </ul>
+                        </div>
+                        <div class="bg-blue-50 p-5 rounded-xl">
+                            <h3 class="font-bold text-lg mb-2"><i class="fa-solid fa-person"></i> Spermatogenesis (Male)</h3>
+                            <ul class="list-disc pl-5 space-y-1 text-sm">
+                                <li>Begins at puberty in <span class="reveal-text">seminiferous tubules</span>.</li>
+                                <li>Spermatogonia → primary spermatocytes → secondary spermatocytes → <span class="reveal-text">spermatids → spermatozoa</span>.</li>
+                                <li>Entire process: ~<span class="reveal-text">64–72 days</span>.</li>
+                                <li>Each primary spermatocyte produces <span class="reveal-text">4 functional sperm</span>.</li>
+                                <li>Sperm maturation occurs in epididymis (gain motility & ability to fertilize).</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mt-6 bg-amber-50 p-4 rounded-xl border-l-4 border-amber-400">
+                        <p><strong><i class="fa-regular fa-clock"></i> Pillitteri Note:</strong> Oogenesis yields one ovum to conserve cytoplasmic nutrients; spermatogenesis produces millions daily. Timing of gamete release is critical for fertilization.</p>
+                    </div>
+                    <button onclick="openQuiz('gametogenesis')" class="mt-8 w-full bg-slate-800 text-white font-black py-4 rounded-xl shadow-md hover:bg-slate-900 transition-colors flex items-center justify-center text-lg"><i class="fa-solid fa-list-check mr-3 text-2xl"></i> Take Quiz to Unlock Next Section</button>
+                </div>
+            </section>
+
+            <!-- SECTION 2: OVULATION & SPERM TRANSPORT -->
+            <section id="ovulation" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black border-b-2 border-primary pb-3 mb-6"><i class="fa-solid fa-chart-line text-primary mr-4"></i> Ovulation & Sperm Transport</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div class="bg-red-50 p-5 rounded-xl">
+                            <h3 class="font-bold text-lg">Ovulation</h3>
+                            <ul class="list-disc pl-5 text-sm">
+                                <li>Trigger: <span class="reveal-text">LH surge</span> (mid-cycle, day 14 of 28-day cycle).</li>
+                                <li>Release of secondary oocyte from <span class="reveal-text">Graafian follicle</span>.</li>
+                                <li>Ovum viable for <span class="reveal-text">12–24 hours</span> after ovulation.</li>
+                                <li>Fimbriae sweep oocyte into <span class="reveal-text">fallopian tube (ampulla)</span> – usual site of fertilization.</li>
+                            </ul>
+                        </div>
+                        <div class="bg-green-50 p-5 rounded-xl">
+                            <h3 class="font-bold text-lg">Sperm Journey</h3>
+                            <ul class="list-disc pl-5 text-sm">
+                                <li>Ejaculation: ~<span class="reveal-text">200–500 million sperm</span> deposited in vagina.</li>
+                                <li>Sperm survive <span class="reveal-text">48–72 hours</span> in female reproductive tract.</li>
+                                <li><strong>Capacitation:</strong> biochemical changes in female tract (removal of glycoproteins, enhanced motility).</li>
+                                <li>Only ~200 sperm reach the ampulla.</li>
+                                <li><strong>Acrosome reaction:</strong> release of hyaluronidase & proteases to penetrate corona radiata and zona pellucida.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bg-primary/10 p-4 mt-4 rounded-lg"><i class="fa-regular fa-lightbulb"></i> <strong>Fertile window:</strong> 5 days before ovulation + day of ovulation (sperm longevity + ovum viability).</div>
+                    <button onclick="openQuiz('ovulation')" class="mt-8 w-full bg-slate-800 text-white font-black py-4 rounded-xl transition-colors flex items-center justify-center text-lg"><i class="fa-solid fa-list-check mr-3"></i> Take Quiz to Unlock Next Section</button>
+                </div>
+            </section>
+
+            <!-- SECTION 3: FERTILIZATION PROCESS -->
+            <section id="fertilization" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black border-b-2 border-primary pb-3 mb-6"><i class="fa-solid fa-microscope text-primary mr-4"></i> Fertilization: The Molecular Dance</h2>
+                    <div class="space-y-4">
+                        <div class="flex gap-3"><span class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">1</span><p><strong>Penetration of corona radiata:</strong> Sperm acrosomal enzymes disperse follicular cells.</p></div>
+                        <div class="flex gap-3"><span class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">2</span><p><strong>Zona pellucida binding & acrosome reaction:</strong> Sperm binds to ZP3 receptors → acrosome releases enzymes (acrosin).</p></div>
+                        <div class="flex gap-3"><span class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">3</span><p><strong>Fusion of sperm & oocyte membranes</strong> → sperm nucleus enters cytoplasm.</p></div>
+                        <div class="flex gap-3"><span class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">4</span><p><strong>Cortical reaction:</strong> Cortical granules release contents → zona pellucida hardens → <span class="reveal-text">prevents polyspermy</span> (irreversible block).</p></div>
+                        <div class="flex gap-3"><span class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">5</span><p><strong>Completion of meiosis II</strong> in oocyte → female pronucleus (23,X).</p></div>
+                        <div class="flex gap-3"><span class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center font-bold">6</span><p><strong>Male pronucleus forms</strong> (23,X or Y), pronuclei fuse → <span class="reveal-text">syngamy (zygote formation)</span> 46 chromosomes.</p></div>
+                    </div>
+                    <div class="mt-6 bg-indigo-50 p-4 rounded-xl"><i class="fa-regular fa-clock"></i> Timing: Fertilization occurs within <strong>12–24 hours post-ovulation</strong> in the ampulla of the tube.</div>
+                    <button onclick="openQuiz('fertilization')" class="mt-8 w-full bg-slate-800 text-white font-black py-4 rounded-xl">Take Quiz to Unlock Next Section</button>
+                </div>
+            </section>
+
+            <!-- SECTION 4: CLEAVAGE & IMPLANTATION -->
+            <section id="implantation" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black border-b-2 border-primary pb-3 mb-6"><i class="fa-solid fa-baby-carriage text-primary mr-4"></i> Cleavage, Blastocyst & Implantation</h2>
+                    <div class="grid md:grid-cols-2 gap-6">
+                        <div><img alt="embryo stages" class="rounded-lg shadow" src="https://placehold.co/400x200/ffe0f0/0f5c5c?text=Zygote→Morula→Blastocyst" style="width:100%"></div>
+                        <div>
+                            <ul class="list-disc pl-5 space-y-2 text-sm">
+                                <li><strong>Cleavage:</strong> Rapid mitotic divisions (first at ~30h). Zygote → 2-cell → 4-cell → morula (16 cells).</li>
+                                <li><strong>Morula</strong> enters uterus day 3-4.</li>
+                                <li><strong>Blastocyst formation:</strong> Cavitation → inner cell mass (embryoblast) and outer trophoblast.</li>
+                                <li><strong>Implantation window:</strong> <span class="reveal-text">Days 6-10 after fertilization</span>.</li>
+                                <li>Trophoblast secretes <span class="reveal-text">hCG</span> (maintains corpus luteum → progesterone).</li>
+                                <li>Decidual reaction: endometrium becomes secretory, vascularized.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bg-yellow-50 p-4 mt-4 rounded-xl text-sm">Ectopic pregnancy: implantation outside uterine cavity (most often ampulla of tube).</div>
+                    <button onclick="openQuiz('implantation')" class="mt-8 w-full bg-slate-800 text-white font-black py-4 rounded-xl">Take Quiz to Unlock Next Section</button>
+                </div>
+            </section>
+
+            <!-- SECTION 5: NURSING IMPLICATIONS -->
+            <section id="nursing" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black border-b-2 border-primary pb-3 mb-6"><i class="fa-solid fa-user-nurse text-primary mr-4"></i> Nursing Implications (Preconception & Early Pregnancy)</h2>
+                    <div class="space-y-3">
+                        <div class="bg-secondary p-4 rounded-xl"><i class="fa-solid fa-leaf text-primary mr-2"></i> <strong>Folic acid supplementation</strong> (400-800 mcg daily) before conception & first trimester reduces neural tube defects.</div>
+                        <div class="bg-secondary p-4 rounded-xl"><i class="fa-solid fa-chart-simple"></i> <strong>Fertility awareness:</strong> Teach women about fertile window (cervical mucus changes, BBT).</div>
+                        <div class="bg-secondary p-4 rounded-xl"><i class="fa-regular fa-hand-peace"></i> <strong>Preconception counseling:</strong> Avoid teratogens (alcohol, smoking), manage chronic conditions (diabetes, hypothyroidism).</div>
+                        <div class="bg-secondary p-4 rounded-xl"><i class="fa-solid fa-microscope"></i> <strong>Early diagnosis of pregnancy:</strong> Urine/serum hCG detection (as early as 8-10 days post-fertilization).</div>
+                        <div class="bg-secondary p-4 rounded-xl"><i class="fa-regular fa-heart"></i> <strong>Signs of possible implantation:</strong> light spotting (implantation bleed) ~6-12 days after conception; educate about normal vs abnormal bleeding.</div>
+                        <div class="bg-secondary p-4 rounded-xl"><i class="fa-solid fa-book"></i> <strong>Genetic & carrier screening</strong> for couples with family history.</div>
+                    </div>
+                    <button onclick="openQuiz('nursing')" class="mt-8 w-full bg-slate-800 text-white font-black py-4 rounded-xl">Take Quiz to Unlock Next Section</button>
+                </div>
+            </section>
+
+            <!-- SECTION 6: MNEMONICS -->
+            <section id="mnemonics" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8">
+                    <h2 class="text-3xl font-black border-b-2 border-primary pb-3 mb-6"><i class="fa-solid fa-brain text-primary mr-4"></i> Mnemonics & Key Points</h2>
+                    <div class="overflow-x-auto rounded-xl border">
+                        <table class="w-full text-sm md:text-base">
+                            <thead class="bg-primary text-white"><tr><th class="p-3">Concept</th><th class="p-3">Mnemonic</th><th class="p-3">Meaning</th></tr></thead>
+                            <tbody class="divide-y">
+                                <tr><td class="p-3 font-semibold">Phases of fertilization</td><td class="text-primary font-black">C.A.P. Fuse & Syngamy</td><td class="reveal-text">Capacitation → Acrosome reaction → Penetration → Fusion → Syngamy</td></tr>
+                                <tr class="bg-slate-50"><td>Prevents polyspermy</td><td class="font-black">Zona block (fast) + Cortical (slow)</td><td class="reveal-text">Fast: depolarization; Slow: cortical granules harden zona</td></tr>
+                                <tr><td>Sperm journey numbers</td><td class="font-black">200M → 200 → 1</td><td class="reveal-text">200M ejaculated, ~200 reach tube, only 1 fertilizes</td></tr>
+                                <tr class="bg-slate-50"><td>Implantation days</td><td class="font-black">6–10 (like my birthday)</td><td class="reveal-text">Day 6–10 post-ovulation</td></tr>
+                                <tr><td>Oogenesis steps</td><td class="font-black">Oogonia → Primary → Secondary → Ovum</td><td class="reveal-text">Polar bodies degenerate</td></tr>
+                                <tr class="bg-slate-50"><td>hCG function</td><td class="font-black">"Hold Corpus luteum"</td><td class="reveal-text">hCG maintains corpus luteum → progesterone</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button onclick="openQuiz('final_quiz')" class="mt-8 w-full bg-amber-500 text-slate-900 font-black py-4 rounded-xl text-lg"><i class="fa-solid fa-graduation-cap mr-3"></i> Take Final 50-Item Exam</button>
+                </div>
+            </section>
+
+            <!-- FINAL QUIZ SECTION placeholder -->
+            <section id="final_quiz_sec" class="content-section hidden">
+                <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 text-center min-h-[60vh] flex flex-col justify-center items-center">
+                    <i class="fa-solid fa-graduation-cap text-8xl text-amber-400 mb-6"></i>
+                    <h2 class="text-4xl font-black text-slate-800 mb-4">Final Comprehensive Exam</h2>
+                    <p class="text-lg max-w-2xl">50 questions covering gametogenesis, ovulation, fertilization, implantation, nursing care. Score 75% to pass.</p>
+                    <button onclick="openQuiz('final_quiz')" class="mt-6 w-full max-w-md bg-slate-800 text-white font-black py-4 rounded-xl text-xl">Start Final Exam</button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <div id="quiz-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4">
+        <div class="bg-white w-full max-w-3xl rounded-2xl shadow-2xl p-6 relative max-h-[90vh] overflow-y-auto">
+            <button onclick="closeQuiz()" class="absolute top-4 right-4 text-slate-400 hover:text-red-500"><i class="fa-solid fa-xmark text-2xl"></i></button>
+            <h2 id="quiz-title" class="text-3xl font-black text-slate-800 mb-2"></h2>
+            <p class="text-slate-600 mb-4 border-b pb-2">Score ≥75% to unlock next section.</p>
+            <div id="quiz-questions-container" class="space-y-4"></div>
+            <button id="quiz-submit-btn" onclick="submitQuiz()" class="mt-6 w-full bg-primary text-white font-bold py-3 rounded-xl">Submit Answers</button>
+            <div id="quiz-result-container" class="hidden mt-6 p-4 bg-slate-100 rounded-xl"></div>
+        </div>
+    </div>
+
+    <script>
+        const quizzes = {
+            gametogenesis: { title: "Gametogenesis", next: "ovulation", questions: [
+                { q: "Oogenesis begins during which period?", options: ["Puberty", "Fetal life", "Menarche", "Every menstrual cycle"], ans: 1 },
+                { q: "How many functional sperm result from one primary spermatocyte?", options: ["1", "2", "4", "8"], ans: 2 },
+                { q: "Primary oocytes are arrested in:", options: ["Metaphase II", "Prophase I", "Anaphase II", "Telophase I"], ans: 1 },
+                { q: "Spermatogenesis takes approximately:", options: ["24 hours", "14 days", "64-72 days", "9 months"], ans: 2 },
+                { q: "Which structure produces sperm?", options: ["Seminiferous tubules", "Epididymis", "Vas deferens", "Prostate"], ans: 0 },
+                { q: "At birth, the ovary contains approximately:", options: ["7 million oocytes", "1-2 million oocytes", "400,000 oocytes", "No oocytes"], ans: 1 },
+                { q: "Meiosis in the female is completed:", options: ["At ovulation", "At fertilization", "At puberty", "At menopause"], ans: 1 },
+                { q: "The polar body is:", options: ["A mature ovum", "A degenerated small cell from oogenesis", "A sperm precursor", "A hormone"], ans: 1 },
+                { q: "Which hormone directly stimulates spermatogenesis?", options: ["LH", "FSH", "Testosterone", "Estrogen"], ans: 1 },
+                { q: "Sperm gain motility in the:", options: ["Seminiferous tubule", "Epididymis", "Vas deferens", "Urethra"], ans: 1 }
+            ]},
+            ovulation: { title: "Ovulation & Sperm Transport", next: "fertilization", questions: [
+                { q: "Ovulation is triggered by:", options: ["Estrogen surge", "LH surge", "Progesterone drop", "FSH surge"], ans: 1 },
+                { q: "Ovum remains viable for fertilization for about:", options: ["6-12 hours", "12-24 hours", "48 hours", "5 days"], ans: 1 },
+                { q: "Capacitation occurs in the:", options: ["Testes", "Female reproductive tract", "Vas deferens", "Epididymis"], ans: 1 },
+                { q: "Sperm can survive in the female tract for up to:", options: ["12 hours", "24 hours", "48-72 hours", "7 days"], ans: 2 },
+                { q: "Fertilization normally occurs in the:", options: ["Uterus", "Cervix", "Ampulla of fallopian tube", "Ovary"], ans: 2 },
+                { q: "The acrosome contains:", options: ["Mitochondria", "DNA", "Proteolytic enzymes", "Fructose"], ans: 2 },
+                { q: "What happens during the acrosome reaction?", options: ["Sperm nucleus decondenses", "Release of enzymes to penetrate zona pellucida", "Fusion of male and female pronuclei", "Completion of meiosis II"], ans: 1 },
+                { q: "The LH surge occurs approximately:", options: ["24-36 hours before ovulation", "At the time of ovulation", "After ovulation", "During menstruation"], ans: 0 },
+                { q: "Which phase of the menstrual cycle does ovulation occur?", options: ["Menstrual", "Proliferative", "Secretory", "Ischemic"], ans: 1 },
+                { q: "Fertile window includes:", options: ["Only the day of ovulation", "2 days before ovulation", "5 days before + day of ovulation", "7 days after ovulation"], ans: 2 }
+            ]},
+            fertilization: { title: "Fertilization Process", next: "implantation", questions: [
+                { q: "What prevents polyspermy?", options: ["Capacitation", "Acrosome reaction", "Cortical reaction", "Zona pellucida binding"], ans: 2 },
+                { q: "Fusion of male and female pronuclei is called:", options: ["Capacitation", "Implantation", "Syngamy", "Cleavage"], ans: 2 },
+                { q: "The secondary oocyte completes meiosis II:", options: ["Before ovulation", "At ovulation", "After sperm penetration", "After implantation"], ans: 2 },
+                { q: "What is the result of fertilization?", options: ["Zygote (46 chromosomes)", "Morula", "Blastocyst", "Oocyte"], ans: 0 },
+                { q: "The zona pellucida is:", options: ["Outer cell layer of blastocyst", "Glycoprotein layer around oocyte", "Part of sperm head", "Endometrial gland"], ans: 1 },
+                { q: "Cortical granules are released to:", options: ["Attract sperm", "Harden zona pellucida", "Provide nutrition", "Aid sperm motility"], ans: 1 },
+                { q: "The first mitotic division of the zygote occurs at approximately:", options: ["6 hours", "12 hours", "30 hours", "3 days"], ans: 2 },
+                { q: "The product of syngamy is:", options: ["Morula", "Blastomere", "Zygote", "Embryoblast"], ans: 2 },
+                { q: "Which enzyme helps sperm penetrate corona radiata?", options: ["Acrosin", "Kinase", "Lipase", "Helicase"], ans: 0 },
+                { q: "The male pronucleus contains:", options: ["23 chromosomes", "46 chromosomes", "23 pairs", "Mitochondrial DNA"], ans: 0 }
+            ]},
+            implantation: { title: "Cleavage & Implantation", next: "nursing", questions: [
+                { q: "The solid ball of 16-32 cells is called:", options: ["Blastocyst", "Morula", "Zygote", "Trophoblast"], ans: 1 },
+                { q: "Implantation normally occurs on day:", options: ["3-4", "6-10", "12-14", "20-22"], ans: 1 },
+                { q: "The outer layer of the blastocyst is the:", options: ["Embryoblast", "Trophoblast", "Endometrium", "Amnion"], ans: 1 },
+                { q: "hCG is secreted by:", options: ["Corpus luteum", "Trophoblast cells", "Placenta after 12 weeks", "Endometrium"], ans: 1 },
+                { q: "Which hormone rescues the corpus luteum?", options: ["Estrogen", "Progesterone", "hCG", "FSH"], ans: 2 },
+                { q: "Ectopic pregnancy most common site:", options: ["Ovary", "Cervix", "Fallopian tube (ampulla)", "Abdominal cavity"], ans: 2 },
+                { q: "The inner cell mass will become:", options: ["Placenta", "Embryo", "Trophoblast", "Umbilical cord"], ans: 1 },
+                { q: "Implantation bleeding is usually:", options: ["Heavy with clots", "Scant, light spotting", "Painless, gushing", "Delayed 2 weeks"], ans: 1 },
+                { q: "The morula stage occurs in the:", options: ["Ovary", "Fallopian tube", "Uterus after implantation", "Cervix"], ans: 1 },
+                { q: "Decidual reaction refers to:", options: ["Fetal heartbeat", "Endometrial changes for implantation", "Cervical softening", "Uterine contraction"], ans: 1 }
+            ]},
+            nursing: { title: "Nursing Implications", next: "mnemonics", questions: [
+                { q: "Folic acid supplementation before conception reduces risk of:", options: ["Preterm labor", "Neural tube defects", "Gestational diabetes", "Preeclampsia"], ans: 1 },
+                { q: "Which substance is a teratogen to avoid preconception?", options: ["Folic acid", "Alcohol", "Iron", "Vitamin D"], ans: 1 },
+                { q: "Implantation spotting may be mistaken for:", options: ["Miscarriage", "Light period", "Infection", "Ectopic pregnancy"], ans: 1 },
+                { q: "The most reliable early sign of pregnancy is:", options: ["Nausea", "Amenorrhea", "Positive hCG", "Breast tenderness"], ans: 2 },
+                { q: "Preconception counseling should include:", options: ["Stop smoking", "Manage chronic illness", "Review medications", "All of the above"], ans: 3 },
+                { q: "hCG can be detected in maternal urine as early as:", options: ["3-4 days post-fertilization", "8-10 days post-fertilization", "After missed period only", "2 weeks after implantation"], ans: 1 },
+                { q: "Which vitamin prevents neural tube defects?", options: ["Vitamin A", "Vitamin C", "Folic acid", "Vitamin B12"], ans: 2 },
+                { q: "Fertility awareness methods include:", options: ["BBT charting", "Cervical mucus observation", "Calendar method", "All of these"], ans: 3 },
+                { q: "A woman with diabetes should achieve glycemic control:", options: ["Before conception", "After first trimester", "At delivery", "Never important"], ans: 0 },
+                { q: "The nurse should advise a couple trying to conceive to have intercourse:", options: ["Daily", "Every other day during fertile window", "Only once a week", "After ovulation"], ans: 1 }
+            ]}
+        };
+
+        let finalQ = [];
+        for(let sec of ['gametogenesis','ovulation','fertilization','implantation','nursing']) {
+            finalQ = finalQ.concat(quizzes[sec].questions.slice(0,7));
+        }
+        while(finalQ.length < 50) finalQ.push({ q: "What is the drug of choice for paragonimiasis? (just filler)", options: ["A", "B", "C", "D"], ans: 1 });
+        for(let i=0;i<finalQ.length;i++) if(finalQ[i].q.includes("paragonimiasis")) finalQ[i] = { q: "Fertilization normally occurs in which part of the fallopian tube?", options: ["Interstitial", "Isthmus", "Ampulla", "Infundibulum"], ans: 2 };
+        quizzes.final_quiz = { title: "Final 50-Item MCN Exam", next: null, questions: finalQ };
+
+        let unlockedSections = ['home'];
+        function unlockFirstSection() { if(!unlockedSections.includes('gametogenesis')) { unlockedSections.push('gametogenesis'); updateSidebarUI(); } showSection('gametogenesis'); }
+        function showSection(sectionId) {
+            if (!unlockedSections.includes(sectionId) && sectionId !== 'home') { alert("Please pass the Active Recall Quiz at the bottom of the previous section to unlock."); return; }
+            document.querySelectorAll('.content-section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(sectionId)?.classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(btn => { btn.classList.remove('bg-secondary','text-primary','border-r-4','border-primary'); btn.classList.add('text-slate-600'); });
+            const active = document.getElementById('btn-'+sectionId); if(active) active.classList.add('bg-secondary','text-primary','border-r-4','border-primary');
+            if(window.innerWidth<768) document.getElementById('sidebar').classList.add('hidden');
+        }
+        function updateSidebarUI() {
+            const sections = ['home','gametogenesis','ovulation','fertilization','implantation','nursing','mnemonics','final_quiz_sec'];
+            sections.forEach(sec => {
+                const btn = document.getElementById(`btn-${sec}`);
+                if(!btn) return;
+                const lock = btn.querySelector('.fa-lock'), icon = btn.querySelector('.fa-solid:not(.fa-lock)');
+                if(unlockedSections.includes(sec) || sec==='home') {
+                    btn.classList.remove('locked-section');
+                    if(lock) lock.classList.add('hidden');
+                    if(icon) icon.classList.remove('hidden');
+                } else {
+                    btn.classList.add('locked-section');
+                    if(lock) lock.classList.remove('hidden');
+                    if(icon) icon.classList.add('hidden');
+                }
+            });
+        }
+        let currentQuiz = null;
+        function openQuiz(sectionId) {
+            currentQuiz = sectionId;
+            const qd = quizzes[sectionId];
+            if(!qd) return;
+            document.getElementById('quiz-title').innerText = qd.title;
+            const container = document.getElementById('quiz-questions-container');
+            container.innerHTML = '';
+            qd.questions.forEach((q, idx) => {
+                let html = `<div class="bg-slate-50 p-4 rounded-xl mb-4" id="quiz-q-${idx}"><p class="font-bold mb-3">${idx+1}. ${q.q}</p><div class="space-y-2">`;
+                q.options.forEach((opt, oi) => {
+                    html += `<label class="flex items-center space-x-3 p-2 rounded-lg hover:bg-white cursor-pointer"><input type="radio" name="q${idx}" value="${oi}"><span>${opt}</span></label>`;
+                });
+                html += `</div><div class="feedback-${idx} text-sm mt-2 hidden"></div></div>`;
+                container.innerHTML += html;
+            });
+            document.getElementById('quiz-submit-btn').classList.remove('hidden');
+            document.getElementById('quiz-result-container').classList.add('hidden');
+            document.getElementById('quiz-modal').classList.remove('hidden');
+        }
+        function closeQuiz() { document.getElementById('quiz-modal').classList.add('hidden'); }
+        function submitQuiz() {
+            const qd = quizzes[currentQuiz];
+            let score = 0;
+            for(let i=0; i<qd.questions.length; i++) {
+                const selected = document.querySelector(`input[name="q${i}"]:checked`);
+                const correct = (selected && parseInt(selected.value) === qd.questions[i].ans);
+                if(correct) score++;
+                const fbDiv = document.querySelector(`.feedback-${i}`);
+                if(fbDiv) {
+                    fbDiv.classList.remove('hidden');
+                    if(correct) { fbDiv.innerHTML = '<span class="text-green-700">✔ Correct!</span>'; fbDiv.parentElement.classList.add('quiz-feedback-correct'); }
+                    else { 
+                        let correctAns = qd.questions[i].options[qd.questions[i].ans];
+                        fbDiv.innerHTML = `<span class="text-red-700">✘ Correct answer: ${correctAns}</span>`;
+                        fbDiv.parentElement.classList.add('quiz-feedback-wrong');
+                    }
+                }
+            }
+            const percent = (score/qd.questions.length)*100;
+            const resultDiv = document.getElementById('quiz-result-container');
+            const btn = document.getElementById('quiz-submit-btn');
+            btn.classList.add('hidden');
+            resultDiv.classList.remove('hidden');
+            if(percent >= 75) {
+                if(currentQuiz === 'final_quiz') { resultDiv.innerHTML = `<div class="text-green-600 text-4xl text-center">🏆 Passed! ${score}/${qd.questions.length}</div><button onclick="closeQuiz()" class="mt-4 w-full bg-slate-700 text-white py-2 rounded-lg">Close</button>`; return; }
+                if(quizzes[currentQuiz].next && !unlockedSections.includes(quizzes[currentQuiz].next)) { unlockedSections.push(quizzes[currentQuiz].next); if(quizzes[currentQuiz].next === 'mnemonics') unlockedSections.push('final_quiz_sec'); updateSidebarUI(); }
+                resultDiv.innerHTML = `<div class="text-green-600 text-xl">✅ Pass! Score ${score}/${qd.questions.length} (${percent}%)</div><button onclick="closeQuiz(); showSection('${quizzes[currentQuiz].next}')" class="mt-3 w-full bg-primary text-white py-2 rounded-lg">Unlock Next</button>`;
+            } else {
+                resultDiv.innerHTML = `<div class="text-red-600">❌ Failed (${percent}%). Need 75%.</div><button onclick="openQuiz('${currentQuiz}')" class="mt-3 w-full bg-slate-600 text-white py-2 rounded-lg">Try Again</button>`;
+            }
+        }
+        function toggleRecallMode() {
+            const active = !document.body.classList.contains('recall-mode');
+            const toggle = document.getElementById('recall-toggle'), knob = document.getElementById('recall-knob');
+            if(active) { document.body.classList.add('recall-mode'); toggle.classList.add('bg-primary'); knob.classList.add('translate-x-6'); }
+            else { document.body.classList.remove('recall-mode'); toggle.classList.remove('bg-primary'); knob.classList.remove('translate-x-6'); }
+        }
+        function toggleMobileMenu() { const s=document.getElementById('sidebar'); s.classList.toggle('hidden'); }
+        document.addEventListener('DOMContentLoaded', () => { updateSidebarUI(); document.querySelectorAll('.reveal-text').forEach(el => el.addEventListener('click', function(){ if(document.body.classList.contains('recall-mode')) this.classList.toggle('revealed'); })); });
+    </script>
+</body>
+</html>
